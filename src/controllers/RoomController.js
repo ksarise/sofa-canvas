@@ -21,6 +21,7 @@ export default class RoomController {
   drawRoom() {
     this.clearCanvas();
     const points = this.room.points;
+
     if (points.length > 1) {
       this.context.beginPath();
       this.context.moveTo(points[0].x, points[0].y);
@@ -29,6 +30,7 @@ export default class RoomController {
       this.context.lineWidth = 2;
       this.context.stroke();
     }
+
     const previewLine = this.room.previewLine;
     if (previewLine) {
       this.context.setLineDash([5, 5]);
@@ -40,6 +42,7 @@ export default class RoomController {
       this.context.stroke();
       this.context.setLineDash([]);
     }
+
     if (this.room.isDrawing) {
       points.forEach((point) => {
         this.context.fillStyle = "green";

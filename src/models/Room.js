@@ -65,4 +65,20 @@ export default class Room {
   isDrawingComplete() {
     return !this.isDrawing;
   }
+  getCenter() {
+    if (this.points.length === 0) {
+      return { x: 0, y: 0 };
+    }
+
+    let sumX = 0,
+      sumY = 0;
+    this.points.forEach((point) => {
+      sumX += point.x;
+      sumY += point.y;
+    });
+    const centerX = sumX / this.points.length;
+    const centerY = sumY / this.points.length;
+    console.log("Room center:", centerX, centerY);
+    return { x: centerX, y: centerY };
+  }
 }
