@@ -1,8 +1,12 @@
+body {
+  background-color:  #cfd9df;
+}
 #root {
   display: block;
   margin: 0 auto;
   box-sizing: border-box;
   max-width: 800px;
+  height: 100%;
 }
 #btn-start {
   display: block;
@@ -16,10 +20,16 @@
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     transition: all 0.2s ease-in-out;
   }
+  &:active {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease-in-out;
+  }
 }
 
 #sofa-canvas {
   display: block;
-  border: 1px solid black;
+  background-color: aliceblue;
+  border: 2px solid black;
   margin: 0 auto;
 }

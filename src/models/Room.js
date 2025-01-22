@@ -65,4 +65,39 @@ export default class Room {
   isDrawingComplete() {
     return !this.isDrawing;
   }
+  getCenter() {
+    if (this.points.length === 0) {
+      return { x: 0, y: 0 };
+    }
+
+    let sumX = 0,
+      sumY = 0;
+    this.points.forEach((point) => {
+      sumX += point.x;
+      sumY += point.y;
+    });
+    const centerX = sumX / this.points.length;
+    const centerY = sumY / this.points.length;
+    console.log("Room center:", centerX, centerY);
+    return { x: centerX, y: centerY };
+  }
+
+  isPointInside(point) {
+    let inside = false;
+    const { x, y } = point;
+    const points = this.points;
+
+    for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
+      const xi = points[i].x,
+        yi = points[i].y;
+      const xj = points[j].x,
+        yj = points[j].y;
+
+      const intersect =
+        yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+      if (intersect) inside = !inside;
+    }
+
+    return inside;
+  }
 }
