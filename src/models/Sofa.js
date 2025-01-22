@@ -10,6 +10,7 @@ export default class Sofa {
     this.width = 50;
     this.height = 30;
     this.rotation = 0;
+    this.isDragging = false;
   }
 
   setInitialPosition() {

@@ -21,8 +21,12 @@ export default class AppController {
 
   onClick(event) {
     const { offsetX, offsetY } = event;
-    if (this.RoomController.room.isDrawingComplete()) {
-    } else {
+    if (
+      this.RoomController.room.isDrawingComplete() &&
+      this.SofaController.sofa
+    ) {
+      this.SofaController.onCanvasClick(offsetX, offsetY);
+    } else if (!this.RoomController.room.isDrawingComplete()) {
       this.RoomController.onCanvasClick(offsetX, offsetY);
       if (this.RoomController.room.isDrawingComplete()) {
         this.SofaController.spawnSofa();
@@ -33,5 +37,8 @@ export default class AppController {
   onMouseMove(event) {
     const { offsetX, offsetY } = event;
     this.RoomController.onCanvasMouseMove(offsetX, offsetY);
+    if (this.SofaController.sofa && this.SofaController.sofa.isDragging) {
+      this.SofaController.onCanvasMouseMove(offsetX, offsetY);
+    }
   }
 }

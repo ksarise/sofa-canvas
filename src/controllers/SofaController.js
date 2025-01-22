@@ -31,4 +31,23 @@ export default class SofaController {
       this.sofa.draw(this.context);
     }
   }
+  onCanvasClick(x, y) {
+    if (!this.sofa) return;
+    if (
+      x >= this.sofa.x &&
+      x <= this.sofa.x + this.sofa.width &&
+      y >= this.sofa.y &&
+      y <= this.sofa.y + this.sofa.height
+    ) {
+      this.sofa.isDragging = !this.sofa.isDragging;
+    }
+  }
+  onCanvasMouseMove(x, y) {
+    if (this.sofa && this.sofa.isDragging) {
+      this.sofa.x = x - this.sofa.width / 2;
+      this.sofa.y = y - this.sofa.height / 2;
+      this.roomController.fillRoomBackground(this.roomController.room.points);
+      this.drawScene();
+    }
+  }
 }
