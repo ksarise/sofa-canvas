@@ -18,19 +18,14 @@ export default class AppController {
 
   onClick(event) {
     const { offsetX, offsetY } = event;
-
-    if (this.RoomController.isDrawing) {
-      this.RoomController.room.addPoint(offsetX, offsetY);
-      this.RoomController.drawRoom();
-    }
+    const snappedCoords = this.RoomController.snapToAxes(offsetX, offsetY);
+    this.RoomController.room.addPoint(snappedCoords.x, snappedCoords.y);
+    this.RoomController.drawRoom();
   }
 
   onMouseMove(event) {
     const { offsetX, offsetY } = event;
-
-    if (this.RoomController.isDrawing) {
-      this.RoomController.room.updatePreviewLine(offsetX, offsetY);
-      this.RoomController.drawRoom();
-    }
+    this.RoomController.updatePreviewLineWithSnap(offsetX, offsetY);
+    this.RoomController.drawRoom();
   }
 }
