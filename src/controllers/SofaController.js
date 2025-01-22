@@ -19,6 +19,7 @@ export default class SofaController {
       this.drawScene();
     }
   }
+
   resetSofa() {
     this.sofa = null;
     this.drawScene();
@@ -31,6 +32,7 @@ export default class SofaController {
       this.sofa.draw(this.context);
     }
   }
+
   onCanvasClick(x, y) {
     if (!this.sofa) return;
     if (
@@ -42,19 +44,18 @@ export default class SofaController {
       this.sofa.isDragging = !this.sofa.isDragging;
     }
   }
+
   onCanvasMouseMove(x, y) {
     if (this.sofa && this.sofa.isDragging) {
-      const previousX = this.x;
-      const previousY = this.y;
       this.sofa.x = x - this.sofa.width / 2;
       this.sofa.y = y - this.sofa.height / 2;
-      // console.log(this.sofa.isSofaInsideRoom());
-      if (!this.sofa.isSofaInsideRoom()) {
-        this.x = previousX;
-        this.y = previousY;
-        return;
-      }
+      if (!this.sofa.isSofaInsideRoom()) return;
       this.sofa.alignToWall();
+      const closestWall = this.sofa.getClosestWall();
+      // console.log("closest", closestWall);
+      if (closestWall) {
+        this.sofa.snapToWall(closestWall, x, y);
+      }
       this.roomController.fillRoomBackground(this.roomController.room.points);
       this.drawScene();
     }

@@ -35,7 +35,6 @@ export default class Sofa {
 
   isSofaInsideRoom() {
     const corners = this.getSofaCorners();
-    // console.log(corners);
     return corners.every((corner) => this.room.isPointInside(corner));
   }
 
@@ -52,15 +51,18 @@ export default class Sofa {
 
     return corners.map((corner) => {
       const xRotated =
-        corner.x * Math.cos(this.rotation) - corner.y * Math.sin(this.rotation);
+        corner.x * Math.cos((this.rotation * Math.PI) / 180) -
+        corner.y * Math.sin((this.rotation * Math.PI) / 180);
       const yRotated =
-        corner.x * Math.sin(this.rotation) + corner.y * Math.cos(this.rotation);
+        corner.x * Math.sin((this.rotation * Math.PI) / 180) +
+        corner.y * Math.cos((this.rotation * Math.PI) / 180);
       return {
         x: this.x + halfWidth + xRotated,
         y: this.y + halfHeight + yRotated,
       };
     });
   }
+
   alignToWall() {
     const closestWall = this.getClosestWall();
     if (closestWall) {
@@ -98,7 +100,7 @@ export default class Sofa {
     return Math.atan2(deltaY, deltaX) * (180 / Math.PI);
   }
 
-  getDistanceToWall(wall, point) {
+  getDistanceToWall(wall, point, returnProjection = false) {
     const { start, end } = wall;
 
     const vectorToPointX = point.x - start.x;
@@ -114,10 +116,7 @@ export default class Sofa {
     let projectionFactor;
     if (wallLengthSquared) {
       projectionFactor = dotProduct / wallLengthSquared;
-    } else {
-      projectionFactor = -1;
     }
-
     let closestPointOnWall;
     if (projectionFactor < 0) {
       closestPointOnWall = start;
@@ -129,9 +128,62 @@ export default class Sofa {
         y: start.y + projectionFactor * wallVectorY,
       };
     }
+
     const distanceX = point.x - closestPointOnWall.x;
     const distanceY = point.y - closestPointOnWall.y;
+    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+    if (returnProjection) {
+      return { distance, projection: closestPointOnWall };
+    }
 
-    return Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+    return distance;
+  }
+
+  snapToWall(wall, cursorX, cursorY) {
+    const { distance, projection } = this.getDistanceToWall(
+      wall,
+      { x: cursorX, y: cursorY },
+      true
+    );
+    const snapDistance = this.height;
+
+    if (distance <= snapDistance) {
+      const offset = this.calculateOffset(wall);
+      const normal = this.getWallNormal(wall);
+      this.x = projection.x + normal.x * offset - this.width / 2;
+      this.y = projection.y + normal.y * offset - this.height / 2;
+      this.rotation = this.getWallAngle(wall) + 180;
+    }
+
+    const exitSnapDistance = this.width;
+    if (distance > exitSnapDistance) {
+      this.rotation = 0;
+    }
+  }
+
+  calculateOffset(wall) {
+    const sofaCenter = {
+      x: this.x + this.width / 2,
+      y: this.y + this.height / 2,
+    };
+    const normal = this.getWallNormal(wall);
+    const wallToSofa = {
+      x: sofaCenter.x - wall.start.x,
+      y: sofaCenter.y - wall.start.y,
+    };
+    const dotProduct = wallToSofa.x * normal.x + wallToSofa.y * normal.y;
+    return dotProduct < 0 ? -(this.height / 2) : this.height / 2;
+  }
+
+  getWallNormal(wall) {
+    const wallVector = {
+      x: wall.end.x - wall.start.x,
+      y: wall.end.y - wall.start.y,
+    };
+    const wallLength = Math.sqrt(wallVector.x ** 2 + wallVector.y ** 2);
+    return {
+      x: -wallVector.y / wallLength,
+      y: wallVector.x / wallLength,
+    };
   }
 }
