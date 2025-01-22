@@ -1,0 +1,25 @@
+#root {
+  display: block;
+  margin: 0 auto;
+  box-sizing: border-box;
+  max-width: 800px;
+}
+#btn-start {
+  display: block;
+  margin: 40px auto;
+  padding: 10px 30px;
+  cursor: pointer;
+  border-radius: 15%;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: scale(.95);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+#sofa-canvas {
+  display: block;
+  border: 1px solid black;
+  margin: 0 auto;
+}
