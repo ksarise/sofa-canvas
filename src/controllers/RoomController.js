@@ -5,10 +5,12 @@ export default class RoomController {
     this.room = new Room();
     this.canvas = canvas;
     this.context = canvas.getContext("2d");
+    this.cursorPoint = null;
   }
 
   startDrawing() {
     this.room.startDrawing();
+    this.cursorPoint = null;
     this.clearCanvas();
   }
 
@@ -23,6 +25,8 @@ export default class RoomController {
       this.context.beginPath();
       this.context.moveTo(points[0].x, points[0].y);
       points.forEach((point) => this.context.lineTo(point.x, point.y));
+      this.context.strokeStyle = "black";
+      this.context.lineWidth = 2;
       this.context.stroke();
     }
     const previewLine = this.room.previewLine;
@@ -31,22 +35,27 @@ export default class RoomController {
       this.context.beginPath();
       this.context.moveTo(previewLine.start.x, previewLine.start.y);
       this.context.lineTo(previewLine.end.x, previewLine.end.y);
+      this.context.strokeStyle = "black";
+      this.context.lineWidth = 1;
       this.context.stroke();
       this.context.setLineDash([]);
-      if (this.room.isDrawing) {
-        this.context.fillStyle = "green";
-        this.context.fillRect(
-          previewLine.end.x - 3,
-          previewLine.end.y - 3,
-          6,
-          6
-        );
-      }
     }
-    points.forEach((point) => {
+    if (this.room.isDrawing) {
+      points.forEach((point) => {
+        this.context.fillStyle = "green";
+        this.context.fillRect(point.x - 3, point.y - 3, 6, 6);
+      });
+    }
+
+    if (this.cursorPoint && this.room.isDrawing) {
       this.context.fillStyle = "green";
-      this.context.fillRect(point.x - 3, point.y - 3, 6, 6);
-    });
+      this.context.fillRect(
+        this.cursorPoint.x - 3,
+        this.cursorPoint.y - 3,
+        6,
+        6
+      );
+    }
 
     if (this.room.isDrawingComplete() && points.length > 2) {
       this.fillRoomBackground(points);
@@ -76,7 +85,7 @@ export default class RoomController {
 
   onCanvasMouseMove(x, y) {
     if (this.room.isDrawingComplete()) return;
-
+    this.cursorPoint = { x, y };
     this.room.updatePreviewLine(x, y);
     this.drawRoom();
   }
