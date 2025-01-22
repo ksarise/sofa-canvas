@@ -37,7 +37,7 @@ export default class AppController {
   onMouseMove(event) {
     const { offsetX, offsetY } = event;
     this.RoomController.onCanvasMouseMove(offsetX, offsetY);
-    if (this.SofaController.sofa && this.SofaController.sofa.isDragging) {
+    if (this.SofaController.sofa) {
       this.SofaController.onCanvasMouseMove(offsetX, offsetY);
     }
   }
