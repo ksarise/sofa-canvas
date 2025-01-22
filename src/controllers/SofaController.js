@@ -44,8 +44,17 @@ export default class SofaController {
   }
   onCanvasMouseMove(x, y) {
     if (this.sofa && this.sofa.isDragging) {
+      const previousX = this.x;
+      const previousY = this.y;
       this.sofa.x = x - this.sofa.width / 2;
       this.sofa.y = y - this.sofa.height / 2;
+      // console.log(this.sofa.isSofaInsideRoom());
+      if (!this.sofa.isSofaInsideRoom()) {
+        this.x = previousX;
+        this.y = previousY;
+        return;
+      }
+      this.sofa.alignToWall();
       this.roomController.fillRoomBackground(this.roomController.room.points);
       this.drawScene();
     }
