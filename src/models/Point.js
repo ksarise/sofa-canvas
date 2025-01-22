@@ -3,4 +3,13 @@ export default class Point {
     this.x = x;
     this.y = y;
   }
+  distanceTo(other) {
+    const dx = this.x - other.x;
+    const dy = this.y - other.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  isCloseTo(other, threshold) {
+    return this.distanceTo(other) <= threshold;
+  }
 }
